@@ -31,6 +31,9 @@ util.inherits(inRoomApi,EventEmitter);
 
 inRoomApi.prototype.init = function(){
     const self = this;
+
+    self.xapi = null;
+
     return self.connect()
         .then((status) =>{
             console.log("proto status ",status , self.connectedStatus);
@@ -77,9 +80,13 @@ inRoomApi.prototype.onError =  function(){
     const self = this;
     self.xapi.on('error', (err) => {
         console.error(`proto connexion failed: ${err}, exiting`);
-        setTimeout(function(){
-            self.init();
-        }, 4000)
+        console.log(err);
+        if(err=="client-timeout" || err=="client-authentication" || err=="client-socket" || err.toString().indexOf("at position 0 in state STOP")!=-1){
+          setTimeout(function(){
+              self.init();
+          }, 4000)
+        }
+
     });
 
 };
@@ -1083,7 +1090,8 @@ inRoomApi.prototype.initWidget = function(wevent){
       let retBody = JSON.parse(strBody);
       let retStatus = retBody.result;
 
-      if('NORMAL'==param.type){
+      // if('NORMAL'==param.type){
+      if(true){
 
         if("result.fail.call"==retStatus){
             self.xapi.command('UserInterface Message Alert Display',{'Text':"회의 생성에 실패했습니다." , 'Duration':5});
@@ -1095,7 +1103,10 @@ inRoomApi.prototype.initWidget = function(wevent){
             let call_name = retBody.data.call_name;
             let call_id = retBody.data.callId;
 
-            self.xapi.command('Dial',{'Number':call_id});
+            self.xapi.command('Dial',{'Number':call_id}).catch ((err) => {
+                console.error(err);
+            });
+
 
             for(let i=0;i<retBody.data.ep_list.length;i++){
               try{
@@ -1160,7 +1171,10 @@ inRoomApi.prototype.initWidget = function(wevent){
 
         let retCallId = retBody.call_id;
 
-        self.xapi.command('Dial',{'Number':retCallId});
+        self.xapi.command('Dial',{'Number':retCallId}).catch ((err) => {
+            console.error("reconnect_meeting Error : ",err);
+            self.xapi.command('UserInterface Message Alert Display',{ 'Text':"알수 없는 에러가 발생하였습니다." , 'Duration':5});
+        });;
       }
     }
 
@@ -1198,7 +1212,9 @@ inRoomApi.prototype.initPrompt = function(ePrompt){
 
     let retCallId = retBody.call_id;
 
-    self.xapi.command('Dial',{'Number':retCallId});
+    self.xapi.command('Dial',{'Number':retCallId}).catch ((err) => {
+        console.error("inCallFunction Error : ",err);
+    });
 
   }
 
