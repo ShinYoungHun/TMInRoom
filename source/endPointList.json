@@ -1,6 +1,5 @@
 {
   "endPointList":[
-    {"ip":"192.168.0.18","id":"admin","password":""},
     {"ip":"192.168.0.3","id":"admin","password":""}
 
   ]

@@ -80,7 +80,7 @@ inRoomApi.prototype.onError =  function(){
     const self = this;
     self.xapi.on('error', (err) => {
         console.error(`proto connexion failed: ${err}, exiting`);
-        console.log(err);
+        console.log("err",err);
         if(err=="client-timeout" || err=="client-authentication" || err=="client-socket" || err.toString().indexOf("at position 0 in state STOP")!=-1){
           setTimeout(function(){
               self.init();
@@ -96,6 +96,24 @@ inRoomApi.prototype.onError =  function(){
 inRoomApi.prototype.webexMeeting = function(){
     const self =this;
 
+    // self.xapi.status.get('Call').then((value) => {
+    //   console.log(value);
+    // });
+
+    self.xapi.feedback.on('Status Call', data => {
+
+       if(data.length!=undefined){
+         if(data[0]['Status']!=undefined){
+           if(data[0]['Status']=="Connected"){
+             this.initPanel("CommonPanel");
+           }else if(data[0]['Status']=="Disconnecting"){
+             this.initPanel("ContactPanel");
+           }
+         }
+       }
+
+    });
+
     self.xapi.event.on('Userinterface Extensions Panel clicked', (pevent) => {
       this.initPanel(pevent.PanelId);
     });
@@ -104,10 +122,6 @@ inRoomApi.prototype.webexMeeting = function(){
       //console.log(ePrompt);
       this.initPrompt(ePrompt);
     });
-
-    // self.xapi.status.on('Userinterface',(wStatus) => {
-    //   console.log(wStatus);
-    // });
 
     self.xapi.event.on('UserInterface Extensions Widget Action', (wevent) => {
       var eType = wevent.Type;
@@ -134,6 +148,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     case "FastMeetingPanel" : initFastMeetingPanel(); break;
     case "ContactPanel"     : initContactPanel();     break;
     case "MeetingListPanel" : initMeetingListPanel(); break;
+    case "CommonPanel"      : initCommonPanel();      break;
     default : break;
   }
 
@@ -159,6 +174,11 @@ inRoomApi.prototype.initPanel = function(panelId){
 
   function initMeetingListPanel(){
     let xmlcont = createMeetingListPanel();
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+  }
+
+  function initCommonPanel(){
+    let xmlcont = createCommonPanel();
     self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
   }
 
