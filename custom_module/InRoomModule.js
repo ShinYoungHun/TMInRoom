@@ -23,6 +23,8 @@ function inRoomApi(endpoint){
     this.conSourceList = [];
     this.conEPList = [];              //contact 사용 가능 장비 목록
     this.MLList = [];
+    this.normalSourceList = [];
+    this.normalEPList = [];           //normal 사용 가능 장비 목록
     this.init();
 
 }
@@ -148,6 +150,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     case "FastMeetingPanel" : initFastMeetingPanel(); break;
     case "ContactPanel"     : initContactPanel();     break;
     case "MeetingListPanel" : initMeetingListPanel(); break;
+    case "NormalPanel"      : initNormalPanel();      break;
     case "CommonPanel"      : initCommonPanel();      break;
     default : break;
   }
@@ -179,6 +182,11 @@ inRoomApi.prototype.initPanel = function(panelId){
 
   function initCommonPanel(){
     let xmlcont = createCommonPanel();
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+  }
+
+  function initNormalPanel(){
+    let xmlcont = createNormalPanel();
     self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
   }
 
@@ -620,12 +628,12 @@ inRoomApi.prototype.initPanel = function(panelId){
       return xRoot.end({pretty:true});
   }
 
-  function createContactPanel(){
+  function createContactPanel(){                        // 주소록 미팅 패널 생성
     let epip = self.endpoint.ip;
     self.conSourceList = [];
     self.conEPList = [];
 
-    let res = request('GET', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/getDeviceInfo?epip='+epip, {
+    let res = request('GET', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/getDeviceContact?epip='+epip, {
       'content-type' : 'application/json',
       'charset' : 'UTF-8'
     });
@@ -638,50 +646,29 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xRoot = builder.create('Extensions');
     xRoot.ele('Version', '1.5');
 
-    // let xPanel_sub1 = xRoot.ele('Panel');
-    // xPanel_sub1.ele('PanelId','InformationPanel');
-    // xPanel_sub1.ele('Type','Statusbar');
-    // xPanel_sub1.ele('Icon','Info');
-    // xPanel_sub1.ele('Order','1');
-    // xPanel_sub1.ele('Color','#D541D8');
-    // xPanel_sub1.ele('Name',"예약확인");
-    //
-    // let xPage_sub1 = xPanel_sub1.ele('Page');
-    // xPage_sub1.ele('Name',"예약확인");
-    //
-    // let xPanel_sub2 = xRoot.ele('Panel');
-    // xPanel_sub2.ele('PanelId','TimeMeetingPanel');
-    // xPanel_sub2.ele('Type','Statusbar');
-    // xPanel_sub2.ele('Icon','Concierge');
-    // xPanel_sub2.ele('Order','2');
-    // xPanel_sub2.ele('Color','#FF7033');
-    // xPanel_sub2.ele('Name',"회의예약");
-    //
-    // let xPage_sub2 = xPanel_sub2.ele('Page');
-    // xPage_sub2.ele('Name',"회의예약");
-    //
-    // let xPanel_sub3 = xRoot.ele('Panel');
-    // xPanel_sub3.ele('PanelId','FastMeetingPanel');
-    // xPanel_sub3.ele('Type','Statusbar');
-    // xPanel_sub3.ele('Icon','Lightbulb');
-    // xPanel_sub3.ele('Order','3');
-    // xPanel_sub3.ele('Color','#FF3D67');
-    // xPanel_sub3.ele('Name',"즉시예약");
-    //
-    // let xPage_sub3 = xPanel_sub3.ele('Page');
-    // xPage_sub3.ele('Name','즉시예약');
-
     let xPanel_sub5 = xRoot.ele('Panel');
     xPanel_sub5.ele('PanelId','MeetingListPanel');
     xPanel_sub5.ele('Type','Statusbar');
     xPanel_sub5.ele('Icon','Lightbulb');
     xPanel_sub5.ele('Order','5');
-    xPanel_sub5.ele('Color','#07C1E4');
+    xPanel_sub5.ele('Color','#ff7033');
     xPanel_sub5.ele('Name',"회의목록");
 
     let xPage_sub5 = xPanel_sub5.ele('Page');
     xPage_sub5.ele('Name','회의목록');
     xPage_sub5.ele('Options');
+
+    let xPanel_sub6 = xRoot.ele('Panel');
+    xPanel_sub5.ele('PanelId','MeetingListPanel');
+    xPanel_sub5.ele('Type','Statusbar');
+    xPanel_sub5.ele('Icon','Lightbulb');
+    xPanel_sub5.ele('Order','6');
+    xPanel_sub5.ele('Color','#ff503c');
+    xPanel_sub5.ele('Name',"회의실 주소록");
+
+    let xPage_sub6 = xPanel_sub6.ele('Page');
+    xPage_sub6.ele('Name','회의실 주소록');
+    xPage_sub6.ele('Options');
 
     let xPanel = xRoot.ele('Panel');
     xPanel.ele('PanelId','ContactPanel');
@@ -690,12 +677,6 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPanel.ele('Order','4');
     xPanel.ele('Color','#ffb400');
     xPanel.ele('Name',"주소록");
-
-    // let xPage_main = xPanel.ele('Page');
-    // xPage_main.ele('Name','주소록');
-    // xPage_main.ele('Options');
-
-
 
     for(let i=0;i<retItem.length;i++){
 
@@ -716,9 +697,9 @@ inRoomApi.prototype.initPanel = function(panelId){
 
       let xRow_call_btn = xRow_call_row.ele('Widget');
       xRow_call_btn.ele('WidgetId','CallBtn');
-      xRow_call_btn.ele('Name','전화걸기');
+      xRow_call_btn.ele('Name','☎전화걸기');
       xRow_call_btn.ele('Type','Button');
-      xRow_call_btn.ele('Options','size=2');
+      xRow_call_btn.ele('Options','size=4');
 
       let xRow_ep_group = xPage_ep_group.ele('Row');
       xRow_ep_group.ele('Name','장비');
@@ -746,7 +727,7 @@ inRoomApi.prototype.initPanel = function(panelId){
 
       let xRow_call_btn_b = xRow_call_row_b.ele('Widget');
       xRow_call_btn_b.ele('WidgetId','CallBtn');
-      xRow_call_btn_b.ele('Name','전화걸기');
+      xRow_call_btn_b.ele('Name','☎전화걸기');
       xRow_call_btn_b.ele('Type','Button');
       xRow_call_btn_b.ele('Options','size=2');
 
@@ -756,12 +737,11 @@ inRoomApi.prototype.initPanel = function(panelId){
 
   }
 
-  //주소록 회의 내역
-  function createMeetingListPanel(){
+  function createMeetingListPanel(){                          //주소록 회의 내역
 
     let epip = self.endpoint.ip;
 
-    let res = request('GET', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/selContactMeeting?epip='+epip, {
+    let res = request('GET', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/searchContactMeeting?epip='+epip, {
       'content-type' : 'application/json',
       'charset' : 'UTF-8'
     });
@@ -774,54 +754,30 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xRoot = builder.create('Extensions');
     xRoot.ele('Version', '1.5');
 
-    // // 1.예약확인
-    // let xPanel_sub1 = xRoot.ele('Panel');
-    // xPanel_sub1.ele('PanelId','InformationPanel');
-    // xPanel_sub1.ele('Type','Statusbar');
-    // xPanel_sub1.ele('Icon','Info');
-    // xPanel_sub1.ele('Order','1');
-    // xPanel_sub1.ele('Color','#D541D8');
-    // xPanel_sub1.ele('Name',"예약확인");
-    //
-    // let xPage_sub1 = xPanel_sub1.ele('Page');
-    // xPage_sub1.ele('Name',"예약확인");
-
-    // // 2.회의예약
-    // let xPanel_sub2 = xRoot.ele('Panel');
-    // xPanel_sub2.ele('PanelId','TimeMeetingPanel');
-    // xPanel_sub2.ele('Type','Statusbar');
-    // xPanel_sub2.ele('Icon','Concierge');
-    // xPanel_sub2.ele('Order','2');
-    // xPanel_sub2.ele('Color','#FF7033');
-    // xPanel_sub2.ele('Name',"회의예약");
-    //
-    // let xPage_sub2 = xPanel_sub2.ele('Page');
-    // xPage_sub2.ele('Name',"회의예약");
-
-    // // 3.즉시예약
-    // let xPanel_sub3 = xRoot.ele('Panel');
-    // xPanel_sub3.ele('PanelId','FastMeetingPanel');
-    // xPanel_sub3.ele('Type','Statusbar');
-    // xPanel_sub3.ele('Icon','Lightbulb');
-    // xPanel_sub3.ele('Order','3');
-    // xPanel_sub3.ele('Color','#FF3D67');
-    // xPanel_sub3.ele('Name',"즉시예약");
-    //
-    // let xPage_sub3 = xPanel_sub3.ele('Page');
-    // xPage_sub3.ele('Name','즉시예약');
-
     // 4.주소록
     let xPanel_sub4 = xRoot.ele('Panel');
     xPanel_sub4.ele('PanelId','ContactPanel');
     xPanel_sub4.ele('Type','Statusbar');
     xPanel_sub4.ele('Icon','Lightbulb');
     xPanel_sub4.ele('Order','4');
-    xPanel_sub4.ele('Color','#07C1E4');
+    xPanel_sub4.ele('Color','#ffb400');
     xPanel_sub4.ele('Name',"주소록");
 
     let xPage_sub4 = xPanel_sub4.ele('Page');
     xPage_sub4.ele('Name','주소록');
     xPage_sub4.ele('Options');
+
+    let xPanel_sub6 = xRoot.ele('Panel');
+    xPanel_sub5.ele('PanelId','MeetingListPanel');
+    xPanel_sub5.ele('Type','Statusbar');
+    xPanel_sub5.ele('Icon','Lightbulb');
+    xPanel_sub5.ele('Order','6');
+    xPanel_sub5.ele('Color','#ff503c');
+    xPanel_sub5.ele('Name',"회의실 주소록");
+
+    let xPage_sub6 = xPanel_sub6.ele('Page');
+    xPage_sub6.ele('Name','회의실 주소록');
+    xPage_sub6.ele('Options');
 
     // 5.회의목록
     let xPanel = xRoot.ele('Panel');
@@ -829,7 +785,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPanel.ele('Type','Statusbar');
     xPanel.ele('Icon','Lightbulb');
     xPanel.ele('Order','5');
-    xPanel.ele('Color','#ffb400');
+    xPanel.ele('Color','#ff7033');
     xPanel.ele('Name',"회의목록");
 
     let xPage = xPanel.ele('Page');
@@ -856,6 +812,107 @@ inRoomApi.prototype.initPanel = function(panelId){
 
   }
 
+  function createNormalPanel(){                         // 일반 미팅 패널 생성
+
+    let epip = self.endpoint.ip;
+
+    let res = request('GET', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/getDeviceNormal?epip='+epip, {
+      'content-type' : 'application/json',
+      'charset' : 'UTF-8'
+    });
+
+    let strBody = res.getBody('utf8');
+    let retBody = JSON.parse(strBody);
+    let retResult = retBody.result;
+    let retItem = retBody.item;
+
+    let xRoot = builder.create('Extensions');
+    xRoot.ele('Version', '1.5');
+
+    // 4.주소록
+    let xPanel_sub4 = xRoot.ele('Panel');
+    xPanel_sub4.ele('PanelId','ContactPanel');
+    xPanel_sub4.ele('Type','Statusbar');
+    xPanel_sub4.ele('Icon','Lightbulb');
+    xPanel_sub4.ele('Order','4');
+    xPanel_sub4.ele('Color','#ffb400');
+    xPanel_sub4.ele('Name',"주소록");
+
+    let xPage_sub4 = xPanel_sub4.ele('Page');
+    xPage_sub4.ele('Name','주소록');
+    xPage_sub4.ele('Options');
+
+    let xPanel_sub5 = xRoot.ele('Panel');
+    xPanel_sub5.ele('PanelId','MeetingListPanel');
+    xPanel_sub5.ele('Type','Statusbar');
+    xPanel_sub5.ele('Icon','Lightbulb');
+    xPanel_sub5.ele('Order','5');
+    xPanel_sub5.ele('Color','#ff7033');
+    xPanel_sub5.ele('Name',"회의목록");
+
+    let xPage_sub5 = xPanel_sub5.ele('Page');
+    xPage_sub5.ele('Name','회의목록');
+    xPage_sub5.ele('Options');
+
+    for(let i=0;i<retItem.length;i++){
+
+      let xPage_ep_group = xPanel.ele('Page');
+      xPage_ep_group.ele('Name',retItem[i].ep_group_name);
+
+      let xRow_detail = xPage_ep_group.ele('Row');
+      xRow_detail.ele('Name','연결목록');
+
+      let xRow_detail_widget = xRow_detail.ele('Widget');
+      xRow_detail_widget.ele('WidgetId','SystemMessage_normal');
+      xRow_detail_widget.ele('Name','통화 연결 상대를 선택해주세요');
+      xRow_detail_widget.ele('Type','Text');
+      xRow_detail_widget.ele('Options','size=4;fontSize=small;align=center');
+
+      let xRow_call_row = xPage_ep_group.ele('Row');
+      xRow_call_row.ele('Name','');
+
+      let xRow_call_btn = xRow_call_row.ele('Widget');
+      xRow_call_btn.ele('WidgetId','CallBtn');
+      xRow_call_btn.ele('Name','☎전화걸기');
+      xRow_call_btn.ele('Type','Button');
+      xRow_call_btn.ele('Options','size=2');
+
+      let xRow_ep_group = xPage_ep_group.ele('Row');
+      xRow_ep_group.ele('Name','장비');
+      let tempEp = retItem[i].endpoint;
+
+
+      //ep_id 로 버튼 생성
+      for(var j=0;j<tempEp.length;j++){
+
+        let ep_id = tempEp[j].ep_id;
+        let ep_name = tempEp[j].ep_name;
+        let xRow_ep = xRow_ep_group.ele('Widget');
+
+        xRow_ep.ele('WidgetId','NORMAL_'+ep_id);
+        xRow_ep.ele('Name',ep_name);
+        xRow_ep.ele('Type','Button');
+        xRow_ep.ele('Options','size=4');
+
+        self.normalSourceList.push(tempEp[j]);
+
+      }
+
+      let xRow_call_row_b = xPage_ep_group.ele('Row');
+      xRow_call_row_b.ele('Name','');
+
+      let xRow_call_btn_b = xRow_call_row_b.ele('Widget');
+      xRow_call_btn_b.ele('WidgetId','CallBtn');
+      xRow_call_btn_b.ele('Name','☎전화걸기');
+      xRow_call_btn_b.ele('Type','Button');
+      xRow_call_btn_b.ele('Options','size=2');
+
+    }
+
+    return xRoot.end({pretty:true});
+
+  }
+
 }
 
 inRoomApi.prototype.initWidget = function(wevent){
@@ -869,6 +926,8 @@ inRoomApi.prototype.initWidget = function(wevent){
       epButton(wevent.WidgetId);
     }else if(-1!=wevent.WidgetId.toString().indexOf("CON_")){
       con_ep_button(wevent.WidgetId);
+    }else if(-1!=wevent.WidgetId.toString().indexOf("NORMAL_")){
+      normal_ep_button(wevent.WidgetId);
     }else if(-1!=wevent.WidgetId.toString().indexOf("ML_")){
       reconnect_meeting(wevent.WidgetId);
     }else{
@@ -1039,7 +1098,7 @@ inRoomApi.prototype.initWidget = function(wevent){
 
   }
 
-  //---------------------------------------- 주소록 기능 ----------------------------------------
+  //---------------------------------------- DX 주소록 기능 ----------------------------------------
   //장비 버튼 이벤트
   function con_ep_button(epId){
 
@@ -1159,6 +1218,133 @@ inRoomApi.prototype.initWidget = function(wevent){
 
         }
 
+      }
+
+    }else{
+      //장비 개수 에러 처리
+      self.xapi.command('UserInterface Message Alert Display',{ 'Text':"선택된 대상자가 없습니다." , 'Duration':5});
+
+    }
+
+  }
+
+  //---------------------------------------- 일반 주소록 기능 ----------------------------------------
+  function normal_ep_button(epId){
+
+        var subepId = epId.substring(7);
+        let tempCheck = false;
+
+        for (var i = 0; i < self.normalEPList.length; i++) {
+          if(self.normalEPList[i]==subepId){
+            tempCheck = true;
+            self.normalEPList.splice(i,1);
+            break;
+          }
+        }
+
+        if(tempCheck){
+          self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'});
+        }else{
+          self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'});
+          self.normalEPList.push(subepId);
+        }
+
+        normal_text_event();
+  }
+
+  function normal_text_event(){
+
+    let tempString = "";
+    for(var i=0;i<self.normalEPList.length;i++){
+      for(var j=0;j<self.normalSourceList.length;j++){
+        if(self.normalEPList[i]==self.normalSourceList[j].ep_id){
+          tempString = tempString + self.normalSourceList[j].ep_name+",";
+          break;
+        }
+      }
+
+    }
+
+    self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:'SystemMessage_normal',Value:tempString});
+
+  }
+
+  function call_btn_event_normal(){
+
+    //step1.TM호출
+    let param = {};
+    param['host'] = self.endpoint.ip;
+    param['eplist'] = self.normalEPList;
+
+    if(param.eplist.length>0){
+
+      if(1==param.eplist.length){ //직접콜
+        param['type'] = 'DIRECT';
+      }else{
+        param['type'] = 'NORMAL';
+      }
+
+      jsonstrparam = JSON.stringify(param);
+      let res = request('POST', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/addNoramlMeeting', {
+        'content-type' : 'application/json',
+        'charset' : 'UTF-8',
+        'body' : jsonstrparam
+      });
+
+      //step2.res 데이터 로드
+
+      let strBody = res.getBody('utf8');
+      let retBody = JSON.parse(strBody);
+      let retStatus = retBody.result;
+
+      // if('NORMAL'==param.type){
+      if(true){
+
+        if("result.fail.call"==retStatus){
+            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의 생성에 실패했습니다." , 'Duration':5});
+        }else if("result.fail.cospaces"==retStatus){
+            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의실 생성에 실패했습니다." , 'Duration':5});
+        }else if("result.success.normal"==retStatus){
+
+            let retSeq = retBody.data.seq;
+            let call_name = retBody.data.call_name;
+            let call_id = retBody.data.callId;
+
+            self.xapi.command('Dial',{'Number':call_id}).catch ((err) => {
+                console.error(err);
+            });
+
+
+            for(let i=0;i<retBody.data.ep_list.length;i++){
+              try{
+                  let ep_ip = retBody.data.ep_list[i]['epip'];
+                  let ep_id = retBody.data.ep_list[i]['id'];
+                  let ep_pw = retBody.data.ep_list[i]['pw'];
+                  if(ep_pw=="" || ep_pw==null){
+                    ep_pw = '';
+                  }
+
+                  if(true){
+                    let tempXapi = jsxapi.connect("ssh://"+ep_ip, {
+                      username: ep_id,
+                      password: ''
+                    });
+
+                    tempXapi.on('error', (err) => {
+                        console.error(`connection failed: ${err}, exiting`);
+                        //process.exit(1);
+                    });
+
+                    tempXapi.command('UserInterface Message Prompt Display',{'Text':call_name ,'FeedbackId':'INCALL_'+retSeq,'Option.1':'수락' ,'Option.2':'거절','Duration':30});
+                  }
+                }catch(Exception){
+                  console.log(Exception);
+                }finally{
+                  continue;
+                }
+            }
+
+        }
 
       }
 
@@ -1170,6 +1356,7 @@ inRoomApi.prototype.initWidget = function(wevent){
 
   }
 
+  //---------------------------------------- 재 연결 기능 ----------------------------------------
   function reconnect_meeting(widgetId){
     var meet_id = widgetId.substring(3);
 
@@ -1180,7 +1367,7 @@ inRoomApi.prototype.initWidget = function(wevent){
         param['seq'] = meet_id;
         jsonstrparam = JSON.stringify(param);
 
-        let res = request('POST', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/searchContactMeeting', {
+        let res = request('POST', 'http://'+self.tempTMIp+':'+self.tempTMPort+'/api/v1/reconnectMeeting', {
           'content-type' : 'application/json',
           'charset' : 'UTF-8',
           'body' : jsonstrparam

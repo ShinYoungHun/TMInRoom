@@ -14,6 +14,30 @@ var jsonContent = JSON.parse(contents);
 var epList = jsonContent["endPointList"];
 var async = require('async');
 
+var c = new DbClient({
+                  host: '182.237.86.248',
+                  user: 'cmsuser',
+                  password: 'cmsuser',
+                  db:'kotech_cisco_cms'
+              });
+
+c.query("SELECT ip, device_id, IFNULL(device_pwd,'') AS device_pwd FROM cms_endpoint WHERE device_module = 'Y' AND delete_yn = 'N'", function(err, rows) {
+    if (err){
+      throw err;
+    }
+    var rowList = rows;
+    for(var i=0;i<rowList.length;i++){
+
+        var temp = {};
+        temp['ip'] = rowList[i]['ip'];
+        temp['id'] = rowList[i]['device_id'];
+        temp['password'] = rowList[i]['device_pwd'];
+        epList.push(temp);
+    }
+});
+
+c.end();
+
 function callInRoom(ep){
   new inRoom(ep);
 }
@@ -22,9 +46,7 @@ async.each(epList,callInRoom,function(err,result){
   console.log('parallel Done');
 });
 
-
 /* GET home page. */
-
 
 router.post('/inRoomCalls',function(req,res,next){
 
