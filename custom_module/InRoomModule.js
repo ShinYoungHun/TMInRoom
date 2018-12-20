@@ -157,38 +157,54 @@ inRoomApi.prototype.initPanel = function(panelId){
 
   function initInformationPanel(){//InformationPanel 초기화
     let xmlcont = createInformationPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initInformationPanel Error : ",err);
+    });
   }
 
   function initTimeMeetingPanel(){//TimeMeetingPanel 초기화
     let xmlcont = createTimeMeetingPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initTimeMeetingPanel Error : ",err);
+    });
   }
 
   function initFastMeetingPanel(){
     let xmlcont = createFastMeetingPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initFastMeetingPanel Error : ",err);
+    });
   }
 
   function initContactPanel(){
     let xmlcont = createContactPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initContactPanel Error : ",err);
+    });
   }
 
   function initMeetingListPanel(){
     let xmlcont = createMeetingListPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initMeetingListPanel Error : ",err);
+    });
   }
 
   function initCommonPanel(){
     let xmlcont = createCommonPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initCommonPanel Error : ",err);
+    });
   }
 
   function initNormalPanel(){
     let xmlcont = createNormalPanel();
-    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont));
+    self.xapi.command('UserInterface Extensions Set',{ ConfigId: 'default' },entities.encodeNonASCII(xmlcont)).catch ((err) => {
+        console.error("initNormalPanel Error : ",err);
+    });
   }
+
+  //---------------------------------------------------------------------------------------------------------------------------------
 
   function createCommonPanel(){
     let xRoot = builder.create('Extensions');
@@ -659,12 +675,12 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPage_sub5.ele('Options');
 
     let xPanel_sub6 = xRoot.ele('Panel');
-    xPanel_sub5.ele('PanelId','MeetingListPanel');
-    xPanel_sub5.ele('Type','Statusbar');
-    xPanel_sub5.ele('Icon','Lightbulb');
-    xPanel_sub5.ele('Order','6');
-    xPanel_sub5.ele('Color','#ff503c');
-    xPanel_sub5.ele('Name',"회의실 주소록");
+    xPanel_sub6.ele('PanelId','NormalPanel');
+    xPanel_sub6.ele('Type','Statusbar');
+    xPanel_sub6.ele('Icon','Handset');
+    xPanel_sub6.ele('Order','6');
+    xPanel_sub6.ele('Color','#ff503c');
+    xPanel_sub6.ele('Name',"회의실 주소록");
 
     let xPage_sub6 = xPanel_sub6.ele('Page');
     xPage_sub6.ele('Name','회의실 주소록');
@@ -673,7 +689,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xPanel = xRoot.ele('Panel');
     xPanel.ele('PanelId','ContactPanel');
     xPanel.ele('Type','Statusbar');
-    xPanel.ele('Icon','Lightbulb');
+    xPanel.ele('Icon','Handset');
     xPanel.ele('Order','4');
     xPanel.ele('Color','#ffb400');
     xPanel.ele('Name',"주소록");
@@ -699,7 +715,7 @@ inRoomApi.prototype.initPanel = function(panelId){
       xRow_call_btn.ele('WidgetId','CallBtn');
       xRow_call_btn.ele('Name','☎전화걸기');
       xRow_call_btn.ele('Type','Button');
-      xRow_call_btn.ele('Options','size=4');
+      xRow_call_btn.ele('Options','size=2');
 
       let xRow_ep_group = xPage_ep_group.ele('Row');
       xRow_ep_group.ele('Name','장비');
@@ -716,7 +732,7 @@ inRoomApi.prototype.initPanel = function(panelId){
         xRow_ep.ele('WidgetId','CON_'+ep_id);
         xRow_ep.ele('Name',ep_name);
         xRow_ep.ele('Type','Button');
-        xRow_ep.ele('Options','size=2');
+        xRow_ep.ele('Options','size=4');
 
         self.conSourceList.push(tempEp[j]);
 
@@ -758,7 +774,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xPanel_sub4 = xRoot.ele('Panel');
     xPanel_sub4.ele('PanelId','ContactPanel');
     xPanel_sub4.ele('Type','Statusbar');
-    xPanel_sub4.ele('Icon','Lightbulb');
+    xPanel_sub4.ele('Icon','Handset');
     xPanel_sub4.ele('Order','4');
     xPanel_sub4.ele('Color','#ffb400');
     xPanel_sub4.ele('Name',"주소록");
@@ -768,12 +784,12 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPage_sub4.ele('Options');
 
     let xPanel_sub6 = xRoot.ele('Panel');
-    xPanel_sub5.ele('PanelId','MeetingListPanel');
-    xPanel_sub5.ele('Type','Statusbar');
-    xPanel_sub5.ele('Icon','Lightbulb');
-    xPanel_sub5.ele('Order','6');
-    xPanel_sub5.ele('Color','#ff503c');
-    xPanel_sub5.ele('Name',"회의실 주소록");
+    xPanel_sub6.ele('PanelId','NormalPanel');
+    xPanel_sub6.ele('Type','Statusbar');
+    xPanel_sub6.ele('Icon','Handset');
+    xPanel_sub6.ele('Order','6');
+    xPanel_sub6.ele('Color','#ff503c');
+    xPanel_sub6.ele('Name',"회의실 주소록");
 
     let xPage_sub6 = xPanel_sub6.ele('Page');
     xPage_sub6.ele('Name','회의실 주소록');
@@ -792,13 +808,15 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPage.ele('Name','회의목록');
     xPage.ele('Options');
 
-    let xRow = xPage.ele('Row');
-    xRow.ele('Name','List');
+
 
     self.MLList = [];
     for(let i=0;i<retItem.length;i++){
 
       self.MLList.push(retItem[i]);
+
+      let xRow = xPage.ele('Row');
+      xRow.ele('Name',retItem[i].add_date);
 
       let xWidget = xRow.ele('Widget');
       xWidget.ele('WidgetId','ML_'+retItem[i].seq);
@@ -833,7 +851,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xPanel_sub4 = xRoot.ele('Panel');
     xPanel_sub4.ele('PanelId','ContactPanel');
     xPanel_sub4.ele('Type','Statusbar');
-    xPanel_sub4.ele('Icon','Lightbulb');
+    xPanel_sub4.ele('Icon','Handset');
     xPanel_sub4.ele('Order','4');
     xPanel_sub4.ele('Color','#ffb400');
     xPanel_sub4.ele('Name',"주소록");
@@ -854,6 +872,14 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPage_sub5.ele('Name','회의목록');
     xPage_sub5.ele('Options');
 
+    let xPanel = xRoot.ele('Panel');
+    xPanel.ele('PanelId','NormalPanel');
+    xPanel.ele('Type','Statusbar');
+    xPanel.ele('Icon','Handset');
+    xPanel.ele('Order','6');
+    xPanel.ele('Color','#ff503c');
+    xPanel.ele('Name',"회의실 주소록");
+
     for(let i=0;i<retItem.length;i++){
 
       let xPage_ep_group = xPanel.ele('Page');
@@ -872,7 +898,7 @@ inRoomApi.prototype.initPanel = function(panelId){
       xRow_call_row.ele('Name','');
 
       let xRow_call_btn = xRow_call_row.ele('Widget');
-      xRow_call_btn.ele('WidgetId','CallBtn');
+      xRow_call_btn.ele('WidgetId','CallBtnNoraml');
       xRow_call_btn.ele('Name','☎전화걸기');
       xRow_call_btn.ele('Type','Button');
       xRow_call_btn.ele('Options','size=2');
@@ -902,7 +928,7 @@ inRoomApi.prototype.initPanel = function(panelId){
       xRow_call_row_b.ele('Name','');
 
       let xRow_call_btn_b = xRow_call_row_b.ele('Widget');
-      xRow_call_btn_b.ele('WidgetId','CallBtn');
+      xRow_call_btn_b.ele('WidgetId','CallBtnNoraml');
       xRow_call_btn_b.ele('Name','☎전화걸기');
       xRow_call_btn_b.ele('Type','Button');
       xRow_call_btn_b.ele('Options','size=2');
@@ -927,6 +953,7 @@ inRoomApi.prototype.initWidget = function(wevent){
     }else if(-1!=wevent.WidgetId.toString().indexOf("CON_")){
       con_ep_button(wevent.WidgetId);
     }else if(-1!=wevent.WidgetId.toString().indexOf("NORMAL_")){
+      console.log("TTTT");
       normal_ep_button(wevent.WidgetId);
     }else if(-1!=wevent.WidgetId.toString().indexOf("ML_")){
       reconnect_meeting(wevent.WidgetId);
@@ -943,6 +970,7 @@ inRoomApi.prototype.initWidget = function(wevent){
         case "ClearRoom"            : clearRoom();                break;
         case "ReservationRoom"      : reservationRoom();          break;
         case "CallBtn"              : call_btn_event();           break;
+        case "CallBtnNoraml"        : call_btn_event_normal();    break;
 
       }
     }
@@ -1062,9 +1090,13 @@ inRoomApi.prototype.initWidget = function(wevent){
       }
 
       if(tempCheck){
-        self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'});
+        self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'}).catch ((err) => {
+            console.error("epButton Error 1: ",err);
+        });
       }else{
-        self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'});
+        self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'}).catch ((err) => {
+            console.error("epButton Error 2: ",err);
+        });
         self.tmEPList.push(epId);
       }
 
@@ -1114,9 +1146,13 @@ inRoomApi.prototype.initWidget = function(wevent){
     }
 
     if(tempCheck){
-      self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'});
+      self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'}).catch ((err) => {
+          console.error("con_ep_button Error 1: ",err);
+      });
     }else{
-      self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'});
+      self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'}).catch ((err) => {
+          console.error("con_ep_button Error 2: ",err);
+      });
       self.conEPList.push(subepId);
     }
 
@@ -1130,14 +1166,17 @@ inRoomApi.prototype.initWidget = function(wevent){
     for(var i=0;i<self.conEPList.length;i++){
       for(var j=0;j<self.conSourceList.length;j++){
         if(self.conEPList[i]==self.conSourceList[j].ep_id){
-          tempString = tempString + self.conSourceList[j].ep_name+",";
+          var subName = self.conSourceList[j].ep_name.substr(self.conSourceList[j].ep_name.lastIndexOf(" ")+1)
+          tempString = tempString + subName + ",";
           break;
         }
       }
 
     }
 
-    self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:'SystemMessage',Value:tempString});
+    self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:'SystemMessage',Value:tempString}).catch ((err) => {
+        console.error("con_text_event Error 1: ",err);
+    });
 
   }
 
@@ -1173,9 +1212,13 @@ inRoomApi.prototype.initWidget = function(wevent){
       if(true){
 
         if("result.fail.call"==retStatus){
-            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의 생성에 실패했습니다." , 'Duration':5});
+            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의 생성에 실패했습니다." , 'Duration':5}).catch ((err) => {
+                console.error("call_btn_event Error 1: ",err);
+            });
         }else if("result.fail.cospaces"==retStatus){
-            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의실 생성에 실패했습니다." , 'Duration':5});
+            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의실 생성에 실패했습니다." , 'Duration':5}).catch ((err) => {
+                console.error("call_btn_event Error 2: ",err);
+            });
         }else if("result.success.normal"==retStatus){
 
             let retSeq = retBody.data.seq;
@@ -1183,7 +1226,7 @@ inRoomApi.prototype.initWidget = function(wevent){
             let call_id = retBody.data.callId;
 
             self.xapi.command('Dial',{'Number':call_id}).catch ((err) => {
-                console.error(err);
+                console.error("call_btn_event Error 3: ",err);
             });
 
 
@@ -1207,7 +1250,9 @@ inRoomApi.prototype.initWidget = function(wevent){
                         //process.exit(1);
                     });
 
-                    tempXapi.command('UserInterface Message Prompt Display',{'Text':call_name ,'FeedbackId':'INCALL_'+retSeq,'Option.1':'수락' ,'Option.2':'거절','Duration':30});
+                    tempXapi.command('UserInterface Message Prompt Display',{'Text':call_name ,'FeedbackId':'INCALL_'+retSeq,'Option.1':'수락' ,'Option.2':'거절','Duration':30}).catch ((err) => {
+                        console.error("tempXapi call_btn_event Error 1: ",err);
+                    });
                   }
                 }catch(Exception){
                   console.log(Exception);
@@ -1222,7 +1267,9 @@ inRoomApi.prototype.initWidget = function(wevent){
 
     }else{
       //장비 개수 에러 처리
-      self.xapi.command('UserInterface Message Alert Display',{ 'Text':"선택된 대상자가 없습니다." , 'Duration':5});
+      self.xapi.command('UserInterface Message Alert Display',{ 'Text':"선택된 대상자가 없습니다." , 'Duration':5}).catch ((err) => {
+          console.error("call_btn_event Error 4: ",err);
+      });
 
     }
 
@@ -1243,11 +1290,17 @@ inRoomApi.prototype.initWidget = function(wevent){
         }
 
         if(tempCheck){
-          self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'});
+          self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'inactive'}).catch ((err) => {
+              console.error("normal_ep_button Error 1: ",err);
+          });
         }else{
-          self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'});
+          self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:epId , Value:'active'}).catch ((err) => {
+              console.error("normal_ep_button Error 2: ",err);
+          });
           self.normalEPList.push(subepId);
         }
+
+        console.log("self.normalEPList : " ,self.normalEPList);
 
         normal_text_event();
   }
@@ -1265,7 +1318,9 @@ inRoomApi.prototype.initWidget = function(wevent){
 
     }
 
-    self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:'SystemMessage_normal',Value:tempString});
+    self.xapi.command('Userinterface Extensions Widget Setvalue',{WidgetId:'SystemMessage_normal',Value:tempString}).catch ((err) => {
+        console.error("normal_text_event Error 1: ",err);
+    });
 
   }
 
@@ -1301,9 +1356,13 @@ inRoomApi.prototype.initWidget = function(wevent){
       if(true){
 
         if("result.fail.call"==retStatus){
-            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의 생성에 실패했습니다." , 'Duration':5});
+            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의 생성에 실패했습니다." , 'Duration':5}).catch ((err) => {
+                console.error("call_btn_event_normal Error 1: ",err);
+            });
         }else if("result.fail.cospaces"==retStatus){
-            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의실 생성에 실패했습니다." , 'Duration':5});
+            self.xapi.command('UserInterface Message Alert Display',{'Text':"회의실 생성에 실패했습니다." , 'Duration':5}).catch ((err) => {
+                console.error("call_btn_event_normal Error 2: ",err);
+            });
         }else if("result.success.normal"==retStatus){
 
             let retSeq = retBody.data.seq;
@@ -1311,7 +1370,7 @@ inRoomApi.prototype.initWidget = function(wevent){
             let call_id = retBody.data.callId;
 
             self.xapi.command('Dial',{'Number':call_id}).catch ((err) => {
-                console.error(err);
+              console.error("call_btn_event_normal Error 3: ",err);
             });
 
 
@@ -1335,7 +1394,9 @@ inRoomApi.prototype.initWidget = function(wevent){
                         //process.exit(1);
                     });
 
-                    tempXapi.command('UserInterface Message Prompt Display',{'Text':call_name ,'FeedbackId':'INCALL_'+retSeq,'Option.1':'수락' ,'Option.2':'거절','Duration':30});
+                    tempXapi.command('UserInterface Message Prompt Display',{'Text':call_name ,'FeedbackId':'INCALL_'+retSeq,'Option.1':'수락' ,'Option.2':'거절','Duration':30}).catch ((err) => {
+                      console.error("tempXapi call_btn_event_normal Error 1: ",err);
+                    });
                   }
                 }catch(Exception){
                   console.log(Exception);
@@ -1350,7 +1411,9 @@ inRoomApi.prototype.initWidget = function(wevent){
 
     }else{
       //장비 개수 에러 처리
-      self.xapi.command('UserInterface Message Alert Display',{ 'Text':"선택된 대상자가 없습니다." , 'Duration':5});
+      self.xapi.command('UserInterface Message Alert Display',{ 'Text':"선택된 대상자가 없습니다." , 'Duration':5}).catch ((err) => {
+          console.error("call_btn_event_normal Error 4: ",err);
+      });
 
     }
 
