@@ -98,6 +98,8 @@ inRoomApi.prototype.onError =  function(){
 inRoomApi.prototype.webexMeeting = function(){
     const self =this;
 
+    this.initPanel("CommonPanel");
+
     // self.xapi.status.get('Call').then((value) => {
     //   console.log(value);
     // });
@@ -210,29 +212,42 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xRoot = builder.create('Extensions');
     xRoot.ele('Version', '1.5');
 
-    let xPanel = xRoot.ele('Panel');
-    xPanel.ele('PanelId','InformationPanel');
-    xPanel.ele('Type','Statusbar');
-    xPanel.ele('Icon','Info');
-    xPanel.ele('Order','1');
-    xPanel.ele('Color','#D541D8');
-    xPanel.ele('Name',"예약확인");
+    // 4.주소록
+    let xPanel_sub4 = xRoot.ele('Panel');
+    xPanel_sub4.ele('PanelId','ContactPanel');
+    xPanel_sub4.ele('Type','Statusbar');
+    xPanel_sub4.ele('Icon','Handset');
+    xPanel_sub4.ele('Order','4');
+    xPanel_sub4.ele('Color','#ffb400');
+    xPanel_sub4.ele('Name',"임원 주소록");
 
-    let xPanel_sub1 = xRoot.ele('Panel');
-    xPanel_sub1.ele('PanelId','TimeMeetingPanel');
-    xPanel_sub1.ele('Type','Statusbar');
-    xPanel_sub1.ele('Icon','Concierge');
-    xPanel_sub1.ele('Order','2');
-    xPanel_sub1.ele('Color','#FF7033');
-    xPanel_sub1.ele('Name',"회의 예약");
+    let xPage_sub4 = xPanel_sub4.ele('Page');
+    xPage_sub4.ele('Name','임원 주소록');
+    xPage_sub4.ele('Options');
 
-    let xPanel_sub2 = xRoot.ele('Panel');
-    xPanel_sub2.ele('PanelId','FastMeetingPanel');
-    xPanel_sub2.ele('Type','Statusbar');
-    xPanel_sub2.ele('Icon','Lightbulb');
-    xPanel_sub2.ele('Order','3');
-    xPanel_sub2.ele('Color','#FF3D67');
-    xPanel_sub2.ele('Name',"즉시 예약");
+    let xPanel_sub5 = xRoot.ele('Panel');
+    xPanel_sub5.ele('PanelId','NormalPanel');
+    xPanel_sub5.ele('Type','Statusbar');
+    xPanel_sub5.ele('Icon','Handset');
+    xPanel_sub5.ele('Order','5');
+    xPanel_sub5.ele('Color','#ff503c');
+    xPanel_sub5.ele('Name',"회의실 주소록");
+
+    let xPage_sub5 = xPanel_sub5.ele('Page');
+    xPage_sub5.ele('Name','회의실 주소록');
+    xPage_sub5.ele('Options');
+
+    let xPanel_sub6 = xRoot.ele('Panel');
+    xPanel_sub6.ele('PanelId','MeetingListPanel');
+    xPanel_sub6.ele('Type','Statusbar');
+    xPanel_sub6.ele('Icon','Lightbulb');
+    xPanel_sub6.ele('Order','6');
+    xPanel_sub6.ele('Color','#ff7033');
+    xPanel_sub6.ele('Name',"회의 목록");
+
+    let xPage_sub6 = xPanel_sub6.ele('Page');
+    xPage_sub6.ele('Name','회의 목록');
+    xPage_sub6.ele('Options');
 
     return xRoot.end({pretty:true});
 
@@ -662,29 +677,29 @@ inRoomApi.prototype.initPanel = function(panelId){
     let xRoot = builder.create('Extensions');
     xRoot.ele('Version', '1.5');
 
-    let xPanel_sub5 = xRoot.ele('Panel');
-    xPanel_sub5.ele('PanelId','MeetingListPanel');
-    xPanel_sub5.ele('Type','Statusbar');
-    xPanel_sub5.ele('Icon','Lightbulb');
-    xPanel_sub5.ele('Order','5');
-    xPanel_sub5.ele('Color','#ff7033');
-    xPanel_sub5.ele('Name',"회의목록");
-
-    let xPage_sub5 = xPanel_sub5.ele('Page');
-    xPage_sub5.ele('Name','회의목록');
-    xPage_sub5.ele('Options');
-
     let xPanel_sub6 = xRoot.ele('Panel');
-    xPanel_sub6.ele('PanelId','NormalPanel');
+    xPanel_sub6.ele('PanelId','MeetingListPanel');
     xPanel_sub6.ele('Type','Statusbar');
-    xPanel_sub6.ele('Icon','Handset');
+    xPanel_sub6.ele('Icon','Lightbulb');
     xPanel_sub6.ele('Order','6');
-    xPanel_sub6.ele('Color','#ff503c');
-    xPanel_sub6.ele('Name',"회의실 주소록");
+    xPanel_sub6.ele('Color','#ff7033');
+    xPanel_sub6.ele('Name',"회의 목록");
 
     let xPage_sub6 = xPanel_sub6.ele('Page');
-    xPage_sub6.ele('Name','회의실 주소록');
+    xPage_sub6.ele('Name','회의 목록');
     xPage_sub6.ele('Options');
+
+    let xPanel_sub5 = xRoot.ele('Panel');
+    xPanel_sub5.ele('PanelId','NormalPanel');
+    xPanel_sub5.ele('Type','Statusbar');
+    xPanel_sub5.ele('Icon','Handset');
+    xPanel_sub5.ele('Order','5');
+    xPanel_sub5.ele('Color','#ff503c');
+    xPanel_sub5.ele('Name',"회의실 주소록");
+
+    let xPage_sub5 = xPanel_sub5.ele('Page');
+    xPage_sub5.ele('Name','회의실 주소록');
+    xPage_sub5.ele('Options');
 
     let xPanel = xRoot.ele('Panel');
     xPanel.ele('PanelId','ContactPanel');
@@ -692,7 +707,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPanel.ele('Icon','Handset');
     xPanel.ele('Order','4');
     xPanel.ele('Color','#ffb400');
-    xPanel.ele('Name',"주소록");
+    xPanel.ele('Name',"임원 주소록");
 
     for(let i=0;i<retItem.length;i++){
 
@@ -777,37 +792,36 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPanel_sub4.ele('Icon','Handset');
     xPanel_sub4.ele('Order','4');
     xPanel_sub4.ele('Color','#ffb400');
-    xPanel_sub4.ele('Name',"주소록");
+    xPanel_sub4.ele('Name',"임원 주소록");
 
     let xPage_sub4 = xPanel_sub4.ele('Page');
-    xPage_sub4.ele('Name','주소록');
+    xPage_sub4.ele('Name','임원 주소록');
     xPage_sub4.ele('Options');
 
-    let xPanel_sub6 = xRoot.ele('Panel');
-    xPanel_sub6.ele('PanelId','NormalPanel');
-    xPanel_sub6.ele('Type','Statusbar');
-    xPanel_sub6.ele('Icon','Handset');
-    xPanel_sub6.ele('Order','6');
-    xPanel_sub6.ele('Color','#ff503c');
-    xPanel_sub6.ele('Name',"회의실 주소록");
+    let xPanel_sub5 = xRoot.ele('Panel');
+    xPanel_sub5.ele('PanelId','NormalPanel');
+    xPanel_sub5.ele('Type','Statusbar');
+    xPanel_sub5.ele('Icon','Handset');
+    xPanel_sub5.ele('Order','5');
+    xPanel_sub5.ele('Color','#ff503c');
+    xPanel_sub5.ele('Name',"회의실 주소록");
 
-    let xPage_sub6 = xPanel_sub6.ele('Page');
-    xPage_sub6.ele('Name','회의실 주소록');
-    xPage_sub6.ele('Options');
+    let xPage_sub5 = xPanel_sub5.ele('Page');
+    xPage_sub5.ele('Name','회의실 주소록');
+    xPage_sub5.ele('Options');
 
     // 5.회의목록
     let xPanel = xRoot.ele('Panel');
     xPanel.ele('PanelId','MeetingListPanel');
     xPanel.ele('Type','Statusbar');
     xPanel.ele('Icon','Lightbulb');
-    xPanel.ele('Order','5');
+    xPanel.ele('Order','6');
     xPanel.ele('Color','#ff7033');
-    xPanel.ele('Name',"회의목록");
+    xPanel.ele('Name',"회의 목록");
 
     let xPage = xPanel.ele('Page');
-    xPage.ele('Name','회의목록');
+    xPage.ele('Name','회의 목록');
     xPage.ele('Options');
-
 
 
     self.MLList = [];
@@ -854,29 +868,29 @@ inRoomApi.prototype.initPanel = function(panelId){
     xPanel_sub4.ele('Icon','Handset');
     xPanel_sub4.ele('Order','4');
     xPanel_sub4.ele('Color','#ffb400');
-    xPanel_sub4.ele('Name',"주소록");
+    xPanel_sub4.ele('Name',"임원 주소록");
 
     let xPage_sub4 = xPanel_sub4.ele('Page');
-    xPage_sub4.ele('Name','주소록');
+    xPage_sub4.ele('Name','임원 주소록');
     xPage_sub4.ele('Options');
 
-    let xPanel_sub5 = xRoot.ele('Panel');
-    xPanel_sub5.ele('PanelId','MeetingListPanel');
-    xPanel_sub5.ele('Type','Statusbar');
-    xPanel_sub5.ele('Icon','Lightbulb');
-    xPanel_sub5.ele('Order','5');
-    xPanel_sub5.ele('Color','#ff7033');
-    xPanel_sub5.ele('Name',"회의목록");
+    let xPanel_sub6 = xRoot.ele('Panel');
+    xPanel_sub6.ele('PanelId','MeetingListPanel');
+    xPanel_sub6.ele('Type','Statusbar');
+    xPanel_sub6.ele('Icon','Lightbulb');
+    xPanel_sub6.ele('Order','6');
+    xPanel_sub6.ele('Color','#ff7033');
+    xPanel_sub6.ele('Name',"회의 목록");
 
-    let xPage_sub5 = xPanel_sub5.ele('Page');
-    xPage_sub5.ele('Name','회의목록');
-    xPage_sub5.ele('Options');
+    let xPage_sub6 = xPanel_sub6.ele('Page');
+    xPage_sub6.ele('Name','회의 목록');
+    xPage_sub6.ele('Options');
 
     let xPanel = xRoot.ele('Panel');
     xPanel.ele('PanelId','NormalPanel');
     xPanel.ele('Type','Statusbar');
     xPanel.ele('Icon','Handset');
-    xPanel.ele('Order','6');
+    xPanel.ele('Order','5');
     xPanel.ele('Color','#ff503c');
     xPanel.ele('Name',"회의실 주소록");
 
@@ -938,6 +952,7 @@ inRoomApi.prototype.initPanel = function(panelId){
     return xRoot.end({pretty:true});
 
   }
+
 
 }
 
@@ -1185,7 +1200,8 @@ inRoomApi.prototype.initWidget = function(wevent){
     //step1.TM호출
     let param = {};
     param['host'] = self.endpoint.ip;
-    param['eplist'] = self.conEPList;
+    //param['eplist'] = self.conEPList;
+    param['eplist'] = ["EPI00000009"];
 
     if(param.eplist.length>0){
 

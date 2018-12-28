@@ -13,218 +13,65 @@ var contents = fs.readFileSync(__basedir+"/source/endPointList.json");
 var jsonContent = JSON.parse(contents);
 var epList = jsonContent["endPointList"];
 var async = require('async');
+var shelljs = require('shelljs')
 
-var c = new DbClient({
-                  host: '182.237.86.248',
-                  user: 'cmsuser',
-                  password: 'cmsuser',
-                  db:'kotech_cisco_cms'
-              });
+function initfn(){
 
-c.query("SELECT ip, device_id, IFNULL(device_pwd,'') AS device_pwd FROM cms_endpoint WHERE device_module = 'Y' AND delete_yn = 'N'", function(err, rows) {
-    if (err){
-      throw err;
-    }
-    var rowList = rows;
-    for(var i=0;i<rowList.length;i++){
+  var c = new DbClient({
+    host: '182.237.86.248',
+    user: 'cmsuser',
+    password: 'cmsuser',
+    db:'kotech_cisco_cms'
+  });
 
-        var temp = {};
-        temp['ip'] = rowList[i]['ip'];
-        temp['id'] = rowList[i]['device_id'];
-        temp['password'] = rowList[i]['device_pwd'];
-        epList.push(temp);
-    }
-});
+  c.query("SELECT ip, device_id, IFNULL(device_pwd,'') AS device_pwd FROM cms_endpoint WHERE device_module = 'Y' AND delete_yn = 'N'", function(err, rows,callback) {
+      if (err){
+        throw err;
+      }
+      var rowList = rows;
+      for(var i=0;i<rowList.length;i++){
 
-c.end();
+          var temp = {};
+          temp['ip'] = rowList[i]['ip'];
+          temp['id'] = rowList[i]['device_id'];
+          temp['password'] = rowList[i]['device_pwd'];
+          epList.push(temp);
+      }
+      console.log(epList);
+      callFN();
+
+  });
+
+  c.end();
+}
 
 function callInRoom(ep){
   new inRoom(ep);
 }
 
-async.each(epList,callInRoom,function(err,result){
-  console.log('parallel Done');
-});
+function callFN(){
+  console.log("Start Con");
+  async.each(epList,callInRoom,function(err,result){
+    console.log('parallel Done');
+  });
+}
 
-/* GET home page. */
+initfn();
 
 router.post('/inRoomCalls',function(req,res,next){
-
-  // let ep_ip = req.body['epip'];
-  // let call_id = req.body['callId'];
-  // let ep_id = req.body['id'];
-  // let ep_pw = req.body['pw'];
-  //
-  // const xapi = jsxapi.connect("ssh://"+ep_ip, {
-  //   username: ep_id,
-  //   password: ep_pw
-  // });
-  //
-  // xapi.on('error', (err) => {
-  //     console.error(`connection failed: ${err}, exiting`);
-  //     //process.exit(1);
-  // });
-
   res.statuscode = 200
   res.json(200,{"result":"success"})
 });
 
-
-// router.post('/',function(req,res,next){
-//   const xapi = jsxapi.connect("ssh://192.168.0.7", {
-//     username: 'admin',
-//     password: ''
-//   });
-//
-//   xapi.on('error', (err) => {
-//       console.error(`connection failed: ${err}, exiting`);
-//       process.exit(1);
-//   });
-//
-//   //xapi.xCommand('UserInterface Message Alert Display',{Text: "Text"});
-//   xapi.command('UserInterface Message Alert Display',{Text: "Text"});
-//
-// });
-
 router.get('/', function(req, res, next) {
+   res.render('index.html', { title: 'Express' });
+});
 
-  //console.log(req);
+router.post('/restart',function(req,res,next){
+  console.log("TTTTTTTTT");
+  res.json(200);
+  shelljs.exec('node www');
 
-
-  // var xapi = jsxapi.connect('ssh://' + self.endpoint.ip, {
-  //     username: self.endpoint.id,
-  //     password: self.endpoint.password,
-  //     keepaliveInterval : 4000
-  // });
-
-
-  //   var endPointList = [];
-  //
-  //   function sshTest(data){
-  //
-  //       var ip = data['ip'];
-  //       var username = data['id'];
-  //       var pass = data['password'];
-  //       console.log("data",ip,",",username,",",pass);
-  //
-  //       var conn = new Client();
-  //       conn.on('ready', function() {
-  //           console.log('Client :: ready');
-  //           conn.exec('uptime', function(err, stream) {
-  //               if (err) throw err;
-  //               stream.on('close', function(code, signal) {
-  //                   console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-  //                   conn.end();
-  //               }).on('data', function(data) {
-  //                   console.log('STDOUT: ' + data);
-  //               }).stderr.on('data', function(data) {
-  //                   console.log('STDERR: ' + data);
-  //               });
-  //           });
-  //       }).connect({
-  //           host: ip,
-  //           port: 22,
-  //           username: username,
-  //           password: pass
-  //       });
-  //   }
-  //
-  //
-  //
-  //
-  //   var tasks = [
-  //       function(callback){
-  //
-  //           var contents = fs.readFileSync(__basedir+"/source/endPointList.json");
-  //           var jsonContent = JSON.parse(contents);
-  //           var epList = jsonContent["endPointList"];
-  //
-  //           for(var i=0;i<epList.length;i++){
-  //               //console.log(epList[i]);
-  //               //sshTest(epList[i]);
-  //           }
-  //
-  //           setTimeout(function(){
-  //               //DB연결
-  //               console.log('one',new Date());
-  //
-  //               var c = new DbClient({
-  //                   host: '182.237.86.248',
-  //                   user: 'cmsuser',
-  //                   password: 'cmsuser',
-  //                   db:'kotech_cisco_cms'
-  //               });
-  //
-  //               //장비목록 조회
-  //               c.query('SELECT * FROM cms_endpoint', function(err, rows) {
-  //                 if (err)
-  //                     throw err;
-  //                 var rowList = rows;
-  //                 for(var i=0;i<rowList.length;i++){
-  //                     console.log(i," : ",rowList[i]['ip']);
-  //                     endPointList.push(rowList[i]['ip']);
-  //                 }
-  //               });
-  //
-  //               c.end();
-  //               callback(null,'one-1','one-2');
-  //         },200)
-  //       },
-  //       function(callback){
-  //           setTimeout(function(){
-  //               console.log('two',new Date());
-  //               console.log("endPoitList : ",endPointList);
-  //               callback(null,'two');
-  //         },100);
-  //       }
-  //   ];
-  //
-  //   async.series(tasks,function(err,results){
-  //     console.log(results);
-  //   });
-  //
-  //   async.parallel([
-  //       function(callback){
-  //           //console.log('zero_parallel',new Date());
-  //           setTimeout(function(){
-  //               //DB연결
-  //               console.log('one',new Date());
-  //
-  //               var c = new DbClient({
-  //                   host: '182.237.86.248',
-  //                   user: 'cmsuser',
-  //                   password: 'cmsuser',
-  //                   db:'kotech_cisco_cms'
-  //               });
-  //
-  //               //장비목록 조회
-  //               c.query('SELECT * FROM cms_endpoint', function(err, rows) {
-  //                   if (err)
-  //                       throw err;
-  //                   var rowList = rows;
-  //                   for(var i=0;i<rowList.length;i++){
-  //                       //console.log(i," : ",rowList[i]['ip']);
-  //                       endPointList.push(rowList[i]['ip']);
-  //                   }
-  //               });
-  //
-  //               c.end();
-  //               callback(null,'one-1','one-2');
-  //           },200)
-  //       },
-  //       function(callback){
-  //           setTimeout(function(){
-  //               //console.log('two',new Date());
-  //               //console.log("endPoitList : ",endPointList);
-  //               callback(null,'two');
-  //           },100);
-  //       }
-  //
-  //   ],function(err,results){
-  //       console.log(results,'in',new Date().getTime());
-  //   });
-  //
-   res.render('index', { title: 'Express' });
 });
 
 
